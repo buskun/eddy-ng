@@ -562,10 +562,16 @@ class LDC1612_ng:
         # logging.info("LDC1612 finished '%s' measurements", self._name)
 
     def _process_batch(self, eventtime):
-        samples = self._ffreader.pull_samples()
+        pulled_samples = self._ffreader.pull_samples()
+        samples = None
+        overflows = None
+        
         # Newer Kalico returns (samples, overflows)
         if isinstance(samples, tuple):
-            samples = samples[0]
+            samples, overflows = pulled_samples
+        else:
+            samples = pulled_samples
+            overflows = self._ffreader.get_last_overflows()
         count = 0
         err_count = 0
         last_err_kind = 0
@@ -586,6 +592,6 @@ class LDC1612_ng:
         return {
             "data": samples,
             "errors": err_count,
-            "overflows": self._ffreader.get_last_overflows(),
+            "overflows": overflows,
         }
 
