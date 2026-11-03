@@ -567,7 +567,7 @@ class LDC1612_ng:
         overflows = None
         
         # Newer Kalico returns (samples, overflows)
-        if isinstance(samples, tuple):
+        if isinstance(pulled_samples, tuple):
             samples, overflows = pulled_samples
         else:
             samples = pulled_samples
